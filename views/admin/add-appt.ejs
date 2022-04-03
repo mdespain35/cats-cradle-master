@@ -1,0 +1,70 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/product.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+
+            <main>
+                <div id="content-wrap">
+                    <h1>Edit Room</h1>
+                    <!-- ouput error message if one exists -->
+                    <% if (errorMessage) { %>
+                        <div class="user-message user-message--error">
+                            <%= errorMessage %>
+                        </div>
+                        <% } %>
+                            <!-- remove html form validation with no validate to check server side validation -->
+                            <form class="product-form"
+                                action="/admin/<% if (editing) { %>edit-appt<% } else { %>add-appt<% } %>"
+                                method="POST" novalidate enctype="multipart/form-data">
+                                <div class="form-control">
+                                    <input type="hidden" name="roomId" value='<%= room._id %>'>
+                                    <h1>Reservation for <%= room.name %></h1>
+                                    <label for="day">Date of Visit:</label>
+                                    <input 
+                                        type="date"
+                                        id="day"
+                                        name="day"
+                                        value="<% if (editing || hasError) { %><%= appt.date %><% } %>">
+                                </div>
+                                <div class="form-control">
+                                    <label for="time">Time of Visit:</label>
+                                    <select name="time" id="time">
+                                        <option value="10">10 A.M.</option>
+                                        <option value="11">11 A.M.</option>
+                                        <option value="12">12 P.M.</option>
+                                        <option value="13">1 P.M.</option>
+                                        <option value="14">2 P.M.</option>
+                                        <option value="15">3 P.M.</option>
+                                    </select>
+                                </div>
+                                <div class="form-control">
+                                    <label for="cat">Select a Cat:</label>
+                                    <select name="cat" id="cat">
+                                        <% for (let cat of cats) { %>
+                                            <option value="<%= cat._id %>"><%= cat.name %></option>    
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="form-control">
+                                    <label for="game">Select a Game:</label>
+                                    <select name="game" id="game">
+                                        <% for (let game of games) { %>
+                                            <option value="<%= game._id %>"><%= game.title %></option>    
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <% if (editing) { %>
+                                    <input type="hidden" value="<%= appt._id %>" name="apptId">
+                                    <% } %>
+
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        <button class="btn" type="submit">
+                                            <% if (editing) { %>Change Appointment<% } else { %>Schedule Appointment<% } %>
+                                        </button>
+                            </form>
+                </div>
+            </main>
+
+            <%- include('../includes/end.ejs') %>

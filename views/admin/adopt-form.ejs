@@ -1,0 +1,57 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/product.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+
+            <main>
+                <div id="content-wrap">
+                    <h1>Application to Adopt <%= cat.name %></h1>
+                    <!-- ouput error message if one exists -->
+                    <% if (errorMessage) { %>
+                        <div class="user-message user-message--error">
+                            <%= errorMessage %>
+                        </div>
+                        <% } %>
+                            <!-- remove html form validation with no validate to check server side validation -->
+                            <form class="product-form"
+                                action="/admin/adopt"
+                                method="POST" novalidate enctype="multipart/form-data">
+                                <div class="form-control">
+                                    <label for="name">Name</label>
+                                    <input
+                                        class="<%= validationErrors.find(e => e.param === 'name') ? 'invalid' : '' %>"
+                                        type="text" name="name" id="name"
+                                        value="<% if (editing || hasError) { %><%= cat.name %><% } %>">
+                                </div>
+                                <div class="form-control">
+                                    <label for="address">Address</label>
+                                    <input type="text" name="address" id="address" >
+                                </div>
+                                <div class="form-control">
+                                    <label for="city">City</label>
+                                    <input type="text" name="city" id="city" >
+                                </div>
+                                <div class="form-control">
+                                    <label for="zip">Zip Code</label>
+                                    <input type="text" name="zip" id="zip" >
+                                </div>
+
+                                <div class="form-control">
+                                    <label for="reason">Why do you want to adopt <%= cat.name %>?</label>
+                                    <textarea
+                                        class="<%= validationErrors.find(e => e.param === 'reason') ? 'invalid' : '' %>"
+                                        name="reason" id="reason"
+                                        rows="5"><% if (editing || hasError) { %><%= adopt.reason %><% } %></textarea>
+                                </div>
+                                        <input type="hidden" name="catId" value="<%= cat._id %>">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        <button class="btn" type="submit">
+                                            Submit Application
+                                        </button>
+                            </form>
+                </div>
+            </main>
+
+            <%- include('../includes/end.ejs') %>

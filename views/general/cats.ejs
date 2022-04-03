@@ -1,0 +1,40 @@
+<%- include('../includes/head.ejs') %>
+
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+
+            <main>
+                <div id="content-wrap">
+                    <% if (cats.length > 0) { %>
+                        <div class="grid">
+                            <% for (let cat of cats) { %>
+                                <div class="cat-card">
+                                            <header class="card__header">
+                                                <h1 class="product__title">
+                                                    <%= cat.name %>
+                                                </h1>
+                                            </header>
+                                            <div class="card__image">
+                                                <img src="/<%= cat.imageUrl %>" alt="Picture of <%= cat.name %>">
+                                            </div>
+                                            <div class="card__content">
+                                                <p class="product__description">
+                                                    <%= cat.description %>
+                                                </p>
+                                                <% if (adopt.length > 0) { %>
+                                                    <% for (let i = 0; i < adopt.length; i++) {
+                                                        if (adopt[i] == cat._id.toString()) { %>
+                                                            <a class="adopt-btn" href="/admin/adopt/<%= cat._id %>" class="pseudo-button">Adopt Me!</a>
+                                                <% } } } %>
+                                        </div>
+                                </div>
+                                <% } %>
+                        </div>
+                        <% } else { %>
+                            <h1>No Cats Found!</h1>
+                            <% } %>
+                </div>
+            </main>
+            <%- include('../includes/end.ejs') %>

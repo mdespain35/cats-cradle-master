@@ -1,0 +1,52 @@
+<header class="main-header">
+
+    <div class="nav-container">
+        <nav class="navbar" id="myTopnav">
+            <div class="icon-bar" onclick="Show()">
+                <i></i>
+                <i></i> 
+                <i></i>
+            </div>
+            <ul id="nav-lists">
+                <li class="close"><span onclick="Hide()">×</span></li>
+                <li><a class="<%= path === '/' ? 'active' : '' %>" href="/">Cat's Cradle</a></li>
+
+                <li><a class="<%= path === '/cats' ? 'active' : '' %>" href="/cats">Cats</a></li>
+                <li><a class="<%= path === '/games' ? 'active' : '' %>" href="/games">Games</a></li>
+                <li><a class="<%= path === '/rooms' ? 'active' : '' %>" href="/rooms">Rooms</a></li>
+
+
+                <!-- only display this information if user is logged in and an admin  -->
+                <% if (isAuthenticated && adminAccess) { %>
+
+                    <li><a class="<%= path === '/admin/add-game' ? 'active' : '' %>" href="/admin/add-game">Inventory</a></li>
+                    <li><a class="<%= path === '/admin/add-cat' ? 'active' : '' %>" href="/admin/add-cat">Add
+                            Cat
+                    </a></li>
+
+                    <% } %>
+
+
+                        <!-- only display this information if user is NOT logged in -->
+                        <% if (!isAuthenticated) { %>
+
+                            <li><a class="<%= path === '/login' ? 'active' : '' %>" href="/login">Login</a></li>
+
+
+                            <li><a class="<%= path === '/signup' ? 'active' : '' %>" href="/signup">Signup</a></li>
+                            <% } else { %>
+                                <!-- show logout if user is logged in -->
+
+                                <form class="logout" action="/logout" method="post">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <button class="topnav-right-button" type="submit">Logout</button>
+                                </form>
+
+                                <% } %>
+
+            </ul>
+
+        </nav>
+    </div>
+
+</header>

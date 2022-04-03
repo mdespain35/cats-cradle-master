@@ -1,0 +1,45 @@
+<%- include('../includes/head.ejs') %>
+
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+
+            <main>
+                <div id="content-wrap">
+                    <% if (rooms.length> 0) { %>
+                        <div class="grid">
+                            <% for (let room of rooms) { %>
+                                <div class="room-card">
+                                            <header class="card__header">
+                                                <h1 class="product__title">
+                                                    <%= room.name %>
+                                                </h1>
+                                                <% if(adminAccess) { %>
+                                                    <a href="/admin/edit-room/<%= room._id %>" class="edit-btn">Edit</a>
+                                                <% } %>
+                                            </header>
+                                            <div class="card__image">
+                                                <img src="/<%= room.imageUrl %>" alt="Picture of <%= room.name %>">
+                                            </div>
+                                            <div class="card__content">
+                                                <p class="product__description">
+                                                    <%= room.description %>
+                                                </p>
+                                        </div>
+                                        <div class="appointment__content">
+                                            <% if(isAuthenticated) { %>
+                                                <h3><a class="reserve-btn" href='/admin/add-appt/<%= room._id %>'>Reserve <%= room.name %></a></h3>
+                                            <% } else { %>
+                                                <h3><a href="/signup">Sign Up</a> or <a href="/login">Login</a> to reserve this room!</h3>
+                                            <% } %>
+                                        </div>
+                                </div>
+                                <% } %>
+                        </div>
+                        <% } else { %>
+                            <h1>No Rooms Found!</h1>
+                            <% } %>
+                </div>
+            </main>
+            <%- include('../includes/end.ejs') %>

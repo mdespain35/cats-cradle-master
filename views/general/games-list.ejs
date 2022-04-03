@@ -1,0 +1,45 @@
+<%- include('../includes/head.ejs') %>
+
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+
+            <main>
+                <div id="content-wrap">
+                    <% if (game.length> 0) { %>
+                        <div class="grid">
+                            <% for (let games of game) { %>
+                                <div class="flip-card">
+                                    <div class="flip-card-inner">
+                                        <div class="card__face flip-card-front">
+                                            <header class="card__header">
+                                                <h1 class="product__title">
+                                                    <%= games.title %>
+                                                </h1>
+                                            </header>
+                                            <div class="card__image">
+                                                <img src="<%= games.imageUrl.full %>" alt="<%= games.title %>">
+                                            </div>
+                                        </div>
+                                        <div class="card__face flip-card-back">
+                                            <div class="card__content">
+                                                <h2 class="product__ingredients">
+                                                    <%= games.title %>
+                                                </h2>
+                                                <p class="game__description">
+                                                    <%= games.description %>
+                                                </p>
+                                                <a href="<%= games.purchaseUrl %>" class="game__purchase">Purchase Here</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
+                        </div>
+                        <% } else { %>
+                            <h1>No Games Found!</h1>
+                            <% } %>
+                </div>
+            </main>
+            <%- include('../includes/end.ejs') %>

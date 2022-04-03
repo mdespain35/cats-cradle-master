@@ -1,0 +1,910 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.5em;
+  background-color: var(--background-body);
+}
+
+:root {
+  --blue: rgb(94, 94, 185);
+  --darkGrey: rgb(43, 39, 39);
+  --cardBackground: #500805;
+  --background-body: #1e0000;
+  --white-text: rgb(248, 238, 238);
+  /* font-size scale */
+  --base-size: 1em;
+  --type-scale: 1;
+  --h3: calc(var(--base-size) * var(--type-scale));
+  --h2: calc(var(--h3) * var(--type-scale));
+  --h1: calc(var(--h2) * var(--type-scale));
+}
+/* font scale factor */
+h1,
+h2,
+h3 {
+  font-family: serif;
+  color: var(--white-text);
+}
+h1 {
+  font-size: var(--h1);
+  text-align: center;
+  letter-spacing: 5px;
+  margin-bottom: 20px;
+}
+h2 {
+  /* font-size: calc(1em * 1.2 * 1.2 * 1.2 * 1.2); */
+  font-size: var(--h2);
+  font-weight: 500;
+  margin: 30px 0px 0px;
+}
+h3 {
+  font-size: var(--h3);
+  font-weight: 500;
+  margin-top: 10px;
+}
+p {
+  font-size: var(--base-size);
+  /* font-size: 1em; */
+}
+li {
+  padding: 10px;
+}
+button {
+  padding: 7px;
+  background-color: var(--background-body);
+  color: white;
+}
+small,
+.text-small {
+  font-size: calc(1em / 1.2);
+}
+
+/* responsive navigation */
+.nav-container {
+  height: 60px;
+  background-color: #333333;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.logo {
+  max-width: 250px;
+  padding: 0 10px;
+  overflow: hidden;
+}
+
+.logo a {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 60px;
+}
+
+.logo a img {
+  max-width: 30%;
+}
+
+.nav-container .navbar {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  padding: 0 10px;
+}
+
+.nav-container .navbar ul {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-container .navbar ul li a,
+.topnav-right-button {
+  text-decoration: none;
+  color: #999999;
+  font-size: 14px;
+  text-transform: uppercase;
+  display: block;
+  height: 60px;
+  line-height: 60px;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.nav-container .navbar ul li a:hover {
+  color: #ffffff;
+  background-color: rgba(23, 23, 23, 0.9);
+}
+
+.nav-container .navbar ul .close {
+  display: none;
+  text-align: right;
+  padding: 10px;
+}
+
+.nav-container .navbar ul .close span {
+  font-size: 40px;
+  display: inline-block;
+  border: 1px solid #cccccc;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.nav-container .navbar .icon-bar {
+  padding: 18px 8px;
+  width: 50px;
+  height: 60px;
+  display: none;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.nav-container .navbar .icon-bar i {
+  background-color: #ffffff;
+  height: 2px;
+}
+.topnav-right-button {
+  border: none;
+  background: transparent;
+  text-decoration: none;
+  margin-top: -6em;
+  margin-left: 155%;
+}
+.topnav-right-button:hover {
+  color: yellow;
+}
+
+@media only screen and (max-width: 650px) {
+  .nav-container {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+  }
+
+  .nav-container .navbar {
+    -webkit-box-flex: 0;
+    -ms-flex: 0;
+    flex: 0;
+  }
+
+  .nav-container .navbar ul {
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    position: fixed;
+    left: 100%;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    background: #ffffff;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    -webkit-transition: left 0.3s;
+    -o-transition: left 0.3s;
+    transition: left 0.3s;
+  }
+
+  .nav-container .navbar ul li a {
+    padding: 10px;
+    font-size: 16px;
+    height: auto;
+    line-height: normal;
+    color: #555555;
+  }
+
+  .nav-container .navbar ul .close {
+    display: block;
+  }
+
+  .nav-container .navbar .icon-bar {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+  }
+
+  .nav-container .navbar ._Menus-show {
+    left: 0;
+    z-index: 10;
+  }
+  .topnav-right-button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-size: 16px;
+    color: black;
+    margin-left: -4px;
+    margin-top: 0px;
+    color: #555555;
+    background: #ffffff;
+
+  }
+  .topnav-right-button:hover {
+    color: #ffffff;
+    background-color: rgba(23, 23, 23, 0.9);
+  }
+}
+.centered a {
+  margin: 0;
+  padding: 0;
+  min-width: 150px;
+}
+
+/* style main section so footer remains at bottom */
+main {
+  position: relative;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#content-wrap {
+  padding-bottom: 2.5rem;
+  margin-top: 2em;
+  text-align: center;
+}
+
+footer {
+  text-align: center;
+  background-color: #333333;
+  color: white;
+  font-style: italic;
+  width: 100%;
+  height: 4rem;
+}
+footer h2 {
+  padding-top: 5px;
+  font-size: 20px;
+  margin: 0;
+}
+footer p {
+  font-size: 17px;
+  margin: 0;
+}
+
+
+/* style error messages and 404 / 500 error pages */
+
+.user-message {
+  margin: auto;
+  width: 90%;
+  border: 1px solid green;
+  padding: 1em;
+  background: green;
+  color: white;
+}
+
+.user-message--error {
+  margin: auto;
+  width: 90%;
+  border: 1px solid red;
+  padding: 1em;
+  background: red;
+  color: white;
+}
+
+@media (min-width: 768px) {
+  .user-message {
+    width: 30rem;
+  }
+}
+
+.errorPage {
+  background-color: black;
+}
+#errorPage {
+  background-color: black !important;
+  color: white;
+  margin: auto;
+  text-align: center;
+}
+.errorContainer {
+  padding-top: 4rem;
+}
+
+#homePage-button {
+  margin-top: 20px;
+}
+#homePage-button:hover {
+  transform: scale(1.2);
+}
+.glow-on-hover {
+  width: 220px;
+  height: 50px;
+  border: none;
+  outline: none;
+  color: #fff;
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+}
+
+.glow-on-hover:before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing 20s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+.glow-on-hover:active {
+  color: #000;
+}
+
+.glow-on-hover:active:after {
+  background: transparent;
+}
+
+.glow-on-hover:hover:before {
+  opacity: 1;
+}
+
+.glow-on-hover:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #111;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
+
+@keyframes glowing {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+.homePage-link a {
+  text-decoration: none;
+}
+#errorTitle {
+  text-transform: uppercase;
+  font-size: 3em;
+}
+
+/*  ----------- Error Page end of styling -------- */
+
+/*  ----------- Login Page start of styling -------- */
+
+
+form {
+  width: 90%;
+  max-width: 400px;
+  margin: 10px auto;
+  background-color: var(--cardBackground);
+  padding: 4px;
+}
+input {
+  width: 90%;
+  padding: 10px;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  font-size: var(--h3);
+  background-color: #741c19;
+  color: white;
+}
+
+
+form ion-icon {
+  width: 8%;
+  font-size: 3rem;
+  margin-bottom: -18px;
+  color: rgb(75, 75, 75);
+  display: inline-block;
+}
+
+.login-form {
+  width: 20rem;
+  max-width: 90%;
+  margin: auto;
+  margin-top: 3rem;
+  border: 2px double rgb(156, 5, 5);
+  padding: 1.7rem;
+}
+.centered a {
+  display: block;
+  margin: auto;
+  margin-top: 3rem;
+  text-decoration: none;
+  text-align: center;
+}
+.centered-foot {
+  display: block;
+  margin: auto;
+  text-decoration: none;
+  text-align: center;
+  color: white;
+  margin-top: -1rem;
+}
+
+.form-control {
+  margin: 1rem 0;
+}
+
+.form-control label,
+.form-control input,
+.form-control textarea {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.25rem;
+  color: white;
+  padding: 7px;
+}
+
+.form-control input,
+.form-control textarea {
+  border: 1px solid #a80505;
+  font: inherit;
+  border-radius: 2px;
+}
+
+.form-control input:focus,
+.form-control textarea:focus {
+  outline-color: #00695c;
+}
+
+.form-control input.invalid {
+  border: 1px solid red;
+}
+.product-form {
+  padding: 1em;
+}
+.product-form #title {
+  text-align: center;
+}
+.description {
+  color: white;
+}
+#ingredients {
+  display: flex;
+  max-width: 1000px;
+}
+.reset a {
+  color: white;
+}
+.reset a:hover {
+  color: yellow;
+}
+.center-small {
+  font-size: 16px;
+  letter-spacing:normal;
+  font-weight:normal;
+}
+
+/*  ----------- Login Page end of styling -------- */
+
+/* ------  Orders Page ----- Start --------------------- */
+.orders {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.cart__item-list {
+  display: flex;
+  justify-content: space-around;
+  margin: auto;
+  max-width: 1000px;
+}
+.cart__item {
+  list-style-type: none;
+  background-color: white;
+  border: 2px double grey;
+  padding: 2rem;
+  width: 300px;
+}
+.centered {
+  display: block;
+  margin: auto;
+  margin-top: 3rem;
+  text-align: center;
+}
+
+/* The flip card container on product list page of book */
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: stretch;
+  margin-top: 2em;
+}
+
+.flip-card {
+  display: flex;
+  justify-content: space-between;
+  perspective: 800px;
+  background-color: transparent;
+  border: 1px solid #f1f1f1;
+  color: white;
+  perspective: 800px;
+  overflow: hidden;
+}
+
+/* This container is needed to position the front and back side */
+.flip-card-inner {
+  margin: 5rem;
+  position: relative;
+  width: 30rem;
+  height: 50rem;
+  color: white;
+  cursor: pointer;
+  transition: 1s ease-in-out;
+  transform-style: preserve-3d;
+  border: 7px double grey;
+  padding: 3em;
+}
+
+/* Do an horizontal flip when you move the mouse over the flip box container */
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(0.5turn);
+  /* transform: rotateY(180deg); */
+}
+.card__face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  transition: 1s ease-in-out;
+  -webkit-box-reflect: below 0
+    linear-gradient(transparent, transparent, rgba(0, 0, 0, 0.4));
+}
+.card__face img {
+  display: block;
+  margin: auto;
+  max-width: 90%;
+  position: absolute;
+  top: 25%;
+  left: 5%
+}
+
+/* Position the front and back side */
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+/* Style the front side (fallback if image is missing) */
+.flip-card-front {
+  background-color: transparent;
+  color: black;
+}
+
+/* Style the back side */
+.flip-card-back {
+  background-color: white;
+  color: rgb(34, 31, 31);
+  transform: rotateY(180deg);
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+.product__title {
+  font-size: 3rem;
+  text-align: center;
+}
+
+.product__ingredients {
+  text-align: center;
+  color: darkgray;
+  margin-bottom: 0.5rem;
+}
+#ingredients, #description{
+  color: black;
+}
+
+.product__description {
+  text-align: center;
+  max-height: 36rem;
+  overflow: scroll;
+}
+
+.game__description {
+  text-align: center;
+  height: 36rem;
+  overflow: scroll;
+}
+/*   ----- Product page under Admin view and Book Detail page under Shop Styling ---------- */
+
+.edit,
+.detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+  border: 2px double grey;
+  width: 50%;
+  margin: auto;
+  margin-top: 3rem;
+  padding: 2em;
+}
+.edit img,
+.detail img {
+  max-width: 200px;
+  max-height: 300px;
+}
+.card__actions {
+  display: flex;
+  margin: auto;
+  padding: 1rem;
+}
+.btn {
+  margin: auto;
+  padding: 0.25rem 1rem;
+  text-decoration: none;
+  font: inherit;
+  border: 1px solid#1e0000;
+  color: #1e0000;
+  background: white;
+  border-radius: 3px;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* generic button styling */
+
+.btn:hover,
+.btn:active,
+.detail-btn:hover,
+.detail-btn:active {
+  background-color: #1e0000;
+  color: white;
+}
+
+.btn.danger {
+  color: red;
+  border-color: red;
+}
+
+.btn.danger:hover,
+.btn.danger:active {
+  background: red;
+  color: white;
+}
+
+/* Room styling */
+
+.room-card {
+  border: 1px solid white;
+  width: 75rem;
+  max-width: 90%;
+}
+
+.room-card .card__content {
+  color: var(--white-text);
+  padding: 1rem;
+}
+
+.room-card img {
+  max-width: 50%;
+  border: 3px solid var(--white-text);
+}
+
+.room-card .card__header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.room-card .card__image {
+  text-align: center;
+}
+
+.appointment__content {
+  text-align: center;
+}
+
+.appointment__content a {
+  text-decoration: none;
+  color: var(--white-text);
+}
+
+.appointment__content a:hover {
+  text-decoration: none;
+  color: red;
+}
+
+.edit-btn {
+  background-color: white;
+  color: black;
+  text-decoration: none;
+  padding: .5rem;
+  border: 1px solid black;
+  border-radius: 15%;
+}
+
+.edit-btn:active {
+  background-color: rgb(122, 122, 122);
+  border: 2px solid black;
+}
+
+
+.appointment__content .reserve-btn, .adopt-btn, .game__purchase {
+  background-color: white;
+  color: black;
+  text-decoration: none;
+  padding: .5rem;
+  border: 1px solid black;
+  border-radius: 5%;
+}
+
+.appointment__content .reserve-btn:active, .adopt-btn:active, .game__purchase:active {
+  background-color: rgb(122, 122, 122);
+  border: 2px solid black;
+}
+
+
+.appointment__content .reserve-btn:hover {
+  color: black;
+}
+
+/* Cat Card Styling */
+
+.cat-card {
+  display: block;
+  width: 50rem;
+  background-color: transparent;
+  border: 1px solid #f1f1f1;
+  color: white;
+  overflow: hidden;
+}
+
+.cat-card .card__image {
+  text-align: center;
+}
+
+.cat-card .card__image img {
+  max-width: 50%;
+}
+
+.cat-card .card__content {
+  text-align: center;
+  padding: .25rem;
+}
+
+.card__content {
+  text-align: center;
+}
+
+
+/* Inventory Styling */
+
+.current-inventory {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  text-align: center;
+}
+
+.games-widget form {
+  max-width: 40rem;
+  width: 100%;
+}
+
+.current-inventory img {
+  max-width: 90%;
+}
+
+.inventory .current-inventory h2 {
+  margin: auto;
+  font-size: 110%;
+}
+
+.inventory {
+  text-align: center;
+}
+
+.inventory h1, .inventory h2 {
+  font-size: 2.75rem;
+}
+
+.new-games-widget {
+  display: grid;
+  grid-template-columns: 1fr 8fr;
+  max-width: 40rem;
+  margin-top: 1.5rem;
+}
+
+.new-games-widget label {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+}
+
+.new-games-widget label img {
+  max-width: 90%;
+}
+
+.new-games-widget label h2 {
+  font-size: 110%;
+  margin: auto;
+}
+
+
+.confirm-game-text {
+  color: white;
+}
+
+
+.newGame {
+  margin: auto;
+}
+
+.home-page h1 {
+  margin: 3rem;
+}
+
+.home-page .room-card{
+  margin: auto;
+}
+
+.form-control #reason {
+  color: black;
+}

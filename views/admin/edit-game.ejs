@@ -1,0 +1,53 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/product.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+
+            <main>
+                <div id="content-wrap">
+                    <section class="recipe-section">
+                        <div class="container inventory initial">
+                            <h1 class="searchTitle">Game Search</h1>
+                            <form class="recipe-form">
+                                <input
+                                    class="searchInput"
+                                    type="text"
+                                    aria-label="Search"
+                                    placeholder="Enter the name of the Game you are searching for ..."
+                                />
+                                <ion-icon name="search"></ion-icon>
+                            </form>
+                            <div class="games-widget">
+                                <form action="/admin/add-game" method="POST">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <div class="search-result"></div>
+                                </form>
+                            </div>
+                            </div>
+                    </section>
+                </div>
+                <div id="content-wrap" class="inventory">
+                    <h2>Inventory</h2>
+                    <% if (game.length> 0) { %>
+                        <div class="grid">
+                            <% for (let games of game) { %>
+                                <div class="games-widget">
+                                    <form action="/admin/delete-game" method="POST" class="current-inventory">
+                                        <input type="hidden" value="<%= games._id %>" name="gameId">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        <img src="<%= games.imageUrl.thumbnail %>" alt="<%= games.title %>">
+                                        <h2><%= games.title %></h2>
+                                        <button class="btn" type="submit">Remove</button>
+                                    </form>
+                                </div>
+                                <% } %>
+                        </div>
+                        <% } else { %>
+                            <h1>No Games in Inventory!</h1>
+                            <% } %>
+                </div>
+            </main>
+            <script src="/js/gamesAPI.js"></script>
+            <%- include('../includes/end.ejs') %>
