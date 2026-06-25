@@ -415,7 +415,7 @@ exports.postAdoption = (req, res, next) => {
   .then(cat => {
     if (!errors.isEmpty()) {
       console.log(errors.array());
-      return res.status(422).render(`admin/adopt/${catId}`, {
+      return res.status(422).render('admin/adopt-form', {
         pageTitle: 'Adoption Application',
         path: '/admin/adopt',
         editing: false,
