@@ -26,6 +26,8 @@ on:
         description: "Run Snyk IaC"
         type: boolean
         default: true
+  pull_request:
+    branches: ["main"]
 permissions:
   contents: read
   security-events: write
