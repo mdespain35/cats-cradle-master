@@ -1,0 +1,326 @@
+name: SiegePal Security
+on:
+  workflow_dispatch:
+    inputs:
+      semgrep:
+        description: "Run Semgrep"
+        type: boolean
+        default: true
+      trivy:
+        description: "Run Trivy"
+        type: boolean
+        default: true
+      checkov:
+        description: "Run Checkov"
+        type: boolean
+        default: true
+      snyk:
+        description: "Run Snyk (SCA)"
+        type: boolean
+        default: true
+      snyk_code:
+        description: "Run Snyk Code"
+        type: boolean
+        default: true
+      snyk_iac:
+        description: "Run Snyk IaC"
+        type: boolean
+        default: true
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+  checks: write
+jobs:
+  semgrep:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.semgrep == true || inputs.semgrep == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install Semgrep
+        run: pip install --disable-pip-version-check --no-cache-dir semgrep
+      - name: Run Semgrep
+        id: scan
+        continue-on-error: true
+        run: semgrep --config auto --sarif --output semgrep.sarif .
+      - name: Upload SARIF
+        if: always()
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: semgrep.sarif
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: siegepal-semgrep-results
+          path: semgrep.sarif
+      - name: Notify SiegePal
+        continue-on-error: true
+        env:
+          SIEGEPAL_CALLBACK_URL: "https://fkifoxniqz.a.pinggy.link/github/scan-callback/"
+          SIEGEPAL_CALLBACK_TOKEN: "0b5d42942de7ca3f837ae230bd45f19f136f7fea70c5a6fa113e3bca1912faba"
+        run: >
+          curl -sS -X POST "$SIEGEPAL_CALLBACK_URL"
+          -H "Content-Type: application/json"
+          -H "Authorization: Bearer $SIEGEPAL_CALLBACK_TOKEN"
+          -d '{"repository":"mdespain35/cats-cradle-master","run_id":"${{ github.run_id }}","category":"sast"}'
+          || true
+  trivy:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.trivy == true || inputs.trivy == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Run Trivy
+        id: scan
+        continue-on-error: true
+        run: >
+          docker run --rm -v "$PWD:/workspace" aquasec/trivy:0.56.1
+          fs --exit-code 0 --scanners vuln,secret,misconfig
+          --format sarif --output /workspace/trivy.sarif /workspace
+      - name: Upload SARIF
+        if: always()
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: trivy.sarif
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: siegepal-trivy-results
+          path: trivy.sarif
+      - name: Notify SiegePal
+        continue-on-error: true
+        env:
+          SIEGEPAL_CALLBACK_URL: "https://fkifoxniqz.a.pinggy.link/github/scan-callback/"
+          SIEGEPAL_CALLBACK_TOKEN: "0b5d42942de7ca3f837ae230bd45f19f136f7fea70c5a6fa113e3bca1912faba"
+        run: >
+          curl -sS -X POST "$SIEGEPAL_CALLBACK_URL"
+          -H "Content-Type: application/json"
+          -H "Authorization: Bearer $SIEGEPAL_CALLBACK_TOKEN"
+          -d '{"repository":"mdespain35/cats-cradle-master","run_id":"${{ github.run_id }}","category":"sca"}'
+          || true
+  checkov:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.checkov == true || inputs.checkov == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install Checkov
+        run: pip install --disable-pip-version-check --no-cache-dir checkov
+      - name: Run Checkov
+        id: scan
+        continue-on-error: true
+        run: checkov -d . -o sarif --output-file-path console,checkov.sarif --soft-fail
+      - name: Upload SARIF
+        if: always()
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: checkov.sarif
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: siegepal-checkov-results
+          path: checkov.sarif
+      - name: Notify SiegePal
+        continue-on-error: true
+        env:
+          SIEGEPAL_CALLBACK_URL: "https://fkifoxniqz.a.pinggy.link/github/scan-callback/"
+          SIEGEPAL_CALLBACK_TOKEN: "0b5d42942de7ca3f837ae230bd45f19f136f7fea70c5a6fa113e3bca1912faba"
+        run: >
+          curl -sS -X POST "$SIEGEPAL_CALLBACK_URL"
+          -H "Content-Type: application/json"
+          -H "Authorization: Bearer $SIEGEPAL_CALLBACK_TOKEN"
+          -d '{"repository":"mdespain35/cats-cradle-master","run_id":"${{ github.run_id }}","category":"iac"}'
+          || true
+  snyk:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.snyk == true || inputs.snyk == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Check SNYK_TOKEN
+        id: snyk_token
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          if [ -z "$SNYK_TOKEN" ]; then
+            echo "token_present=false" >> "$GITHUB_OUTPUT"
+            echo '::warning title=SNYK_TOKEN not set::Snyk Open Source (SCA) did not run because the SNYK_TOKEN secret is not configured. Add it to this repository or your organization Actions secrets to enable Snyk scanning.'
+            {
+              echo '## :warning: Snyk Open Source (SCA) skipped — SNYK_TOKEN not set'
+              echo ''
+              echo 'This scan did **not** run because the `SNYK_TOKEN` Actions secret is missing.'
+              echo ''
+              echo '**How to fix:**'
+              echo ''
+              echo '1. Get a Snyk API Key or PAT at https://app.snyk.io/account'
+              echo '2. **Repository secret:** in this repo, open **Settings -> Secrets and variables -> Actions -> New repository secret**, name it `SNYK_TOKEN`, and paste the token.'
+              echo '3. **Or organization secret (shared across repos):** in your GitHub org, open **Settings -> Secrets and variables -> Actions -> New organization secret**, name it `SNYK_TOKEN`, and grant this repository access.'
+              echo '4. Re-run this workflow.'
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "token_present=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install Snyk CLI
+        if: steps.snyk_token.outputs.token_present == 'true'
+        run: npm install -g snyk
+      - name: Run Snyk Open Source (SCA)
+        id: scan
+        if: steps.snyk_token.outputs.token_present == 'true'
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk test --sarif-file-output=snyk.sarif || true
+      - name: Upload SARIF
+        if: always()
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: snyk.sarif
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: siegepal-snyk-results
+          path: snyk.sarif
+      - name: Notify SiegePal
+        continue-on-error: true
+        env:
+          SIEGEPAL_CALLBACK_URL: "https://fkifoxniqz.a.pinggy.link/github/scan-callback/"
+          SIEGEPAL_CALLBACK_TOKEN: "0b5d42942de7ca3f837ae230bd45f19f136f7fea70c5a6fa113e3bca1912faba"
+        run: >
+          curl -sS -X POST "$SIEGEPAL_CALLBACK_URL"
+          -H "Content-Type: application/json"
+          -H "Authorization: Bearer $SIEGEPAL_CALLBACK_TOKEN"
+          -d '{"repository":"mdespain35/cats-cradle-master","run_id":"${{ github.run_id }}","category":"sca"}'
+          || true
+  snyk-code:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.snyk_code == true || inputs.snyk_code == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Check SNYK_TOKEN
+        id: snyk_token
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          if [ -z "$SNYK_TOKEN" ]; then
+            echo "token_present=false" >> "$GITHUB_OUTPUT"
+            echo '::warning title=SNYK_TOKEN not set::Snyk Code (SAST) did not run because the SNYK_TOKEN secret is not configured. Add it to this repository or your organization Actions secrets to enable Snyk scanning.'
+            {
+              echo '## :warning: Snyk Code (SAST) skipped — SNYK_TOKEN not set'
+              echo ''
+              echo 'This scan did **not** run because the `SNYK_TOKEN` Actions secret is missing.'
+              echo ''
+              echo '**How to fix:**'
+              echo ''
+              echo '1. Get a Snyk API Key or PAT at https://app.snyk.io/account'
+              echo '2. **Repository secret:** in this repo, open **Settings -> Secrets and variables -> Actions -> New repository secret**, name it `SNYK_TOKEN`, and paste the token.'
+              echo '3. **Or organization secret (shared across repos):** in your GitHub org, open **Settings -> Secrets and variables -> Actions -> New organization secret**, name it `SNYK_TOKEN`, and grant this repository access.'
+              echo '4. Re-run this workflow.'
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "token_present=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install Snyk CLI
+        if: steps.snyk_token.outputs.token_present == 'true'
+        run: npm install -g snyk
+      - name: Run Snyk Code (SAST)
+        id: scan
+        if: steps.snyk_token.outputs.token_present == 'true'
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk code test --sarif-file-output=snyk-code.sarif || true
+      - name: Upload SARIF
+        if: always()
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: snyk-code.sarif
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: siegepal-snyk_code-results
+          path: snyk-code.sarif
+      - name: Notify SiegePal
+        continue-on-error: true
+        env:
+          SIEGEPAL_CALLBACK_URL: "https://fkifoxniqz.a.pinggy.link/github/scan-callback/"
+          SIEGEPAL_CALLBACK_TOKEN: "0b5d42942de7ca3f837ae230bd45f19f136f7fea70c5a6fa113e3bca1912faba"
+        run: >
+          curl -sS -X POST "$SIEGEPAL_CALLBACK_URL"
+          -H "Content-Type: application/json"
+          -H "Authorization: Bearer $SIEGEPAL_CALLBACK_TOKEN"
+          -d '{"repository":"mdespain35/cats-cradle-master","run_id":"${{ github.run_id }}","category":"sast"}'
+          || true
+  snyk-iac:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.snyk_iac == true || inputs.snyk_iac == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Check SNYK_TOKEN
+        id: snyk_token
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          if [ -z "$SNYK_TOKEN" ]; then
+            echo "token_present=false" >> "$GITHUB_OUTPUT"
+            echo '::warning title=SNYK_TOKEN not set::Snyk IaC did not run because the SNYK_TOKEN secret is not configured. Add it to this repository or your organization Actions secrets to enable Snyk scanning.'
+            {
+              echo '## :warning: Snyk IaC skipped — SNYK_TOKEN not set'
+              echo ''
+              echo 'This scan did **not** run because the `SNYK_TOKEN` Actions secret is missing.'
+              echo ''
+              echo '**How to fix:**'
+              echo ''
+              echo '1. Get a Snyk API Key or PAT at https://app.snyk.io/account'
+              echo '2. **Repository secret:** in this repo, open **Settings -> Secrets and variables -> Actions -> New repository secret**, name it `SNYK_TOKEN`, and paste the token.'
+              echo '3. **Or organization secret (shared across repos):** in your GitHub org, open **Settings -> Secrets and variables -> Actions -> New organization secret**, name it `SNYK_TOKEN`, and grant this repository access.'
+              echo '4. Re-run this workflow.'
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "token_present=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install Snyk CLI
+        if: steps.snyk_token.outputs.token_present == 'true'
+        run: npm install -g snyk
+      - name: Run Snyk IaC
+        id: scan
+        if: steps.snyk_token.outputs.token_present == 'true'
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk iac test --sarif-file-output=snyk-iac.sarif || true
+      - name: Upload SARIF
+        if: always()
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: snyk-iac.sarif
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: siegepal-snyk_iac-results
+          path: snyk-iac.sarif
+      - name: Notify SiegePal
+        continue-on-error: true
+        env:
+          SIEGEPAL_CALLBACK_URL: "https://fkifoxniqz.a.pinggy.link/github/scan-callback/"
+          SIEGEPAL_CALLBACK_TOKEN: "0b5d42942de7ca3f837ae230bd45f19f136f7fea70c5a6fa113e3bca1912faba"
+        run: >
+          curl -sS -X POST "$SIEGEPAL_CALLBACK_URL"
+          -H "Content-Type: application/json"
+          -H "Authorization: Bearer $SIEGEPAL_CALLBACK_TOKEN"
+          -d '{"repository":"mdespain35/cats-cradle-master","run_id":"${{ github.run_id }}","category":"iac"}'
+          || true
